@@ -25,10 +25,11 @@ export const metadata: Metadata = {
   ],
   authors: [{ name: 'Endris Zeynu Mohammed' }],
   creator: 'Endris Zeynu Mohammed',
+  metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000'),
   openGraph: {
     type: 'website',
     locale: 'en_US',
-    url: 'https://yourwebsite.com',
+    url: '/',
     title: 'Endris Zeynu Mohammed | Full-Stack Developer',
     description:
       'Full-Stack Web Developer specializing in React, Node.js, and MongoDB. Building modern, responsive, and high-performance web applications.',
@@ -95,7 +96,7 @@ export default function RootLayout({
     '@type': 'Person',
     name: 'Endris Zeynu Mohammed',
     jobTitle: 'Full-Stack Developer',
-    url: 'https://yourwebsite.com',
+    url: process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000',
     sameAs: [
       'https://github.com/edriszeynu',
       'https://linkedin.com/in/yourusername',
