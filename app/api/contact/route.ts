@@ -96,23 +96,30 @@ export async function POST(request: Request) {
       
       const { data, error } = await resend.emails.send({
         from: "Portfolio Contact <onboarding@resend.dev>",
-        to: "endriszeynu173@gmail.com",
-        subject: `Portfolio Contact: ${subject}`,
+        to: ["endriszeynu173@gmail.com"],
         replyTo: email,
+        subject: `New Message from ${name}: ${subject}`,
         html: `
-          <h2>New Contact Form Submission</h2>
-          <p><strong>From:</strong> ${name}</p>
-          <p><strong>Email:</strong> ${email}</p>
-          <p><strong>Subject:</strong> ${subject}</p>
-          <p><strong>Message:</strong></p>
-          <p>${message.replace(/\n/g, "<br>")}</p>
+          <div style="font-family: sans-serif; max-width: 600px; margin: 0 auto; padding: 24px; background: #0f0f1a; color: #ffffff; border-radius: 12px;">
+            <h2 style="color: #a855f7; margin-bottom: 24px;">📬 New Portfolio Contact</h2>
+            <table style="width: 100%; border-collapse: collapse;">
+              <tr><td style="padding: 8px 0; color: #888;">Name</td><td style="padding: 8px 0; font-weight: bold;">${name}</td></tr>
+              <tr><td style="padding: 8px 0; color: #888;">Email</td><td style="padding: 8px 0;"><a href="mailto:${email}" style="color: #a855f7;">${email}</a></td></tr>
+              <tr><td style="padding: 8px 0; color: #888;">Subject</td><td style="padding: 8px 0;">${subject}</td></tr>
+            </table>
+            <hr style="border-color: rgba(255,255,255,0.1); margin: 20px 0;" />
+            <p style="color: #888; margin-bottom: 8px;">Message:</p>
+            <p style="line-height: 1.7; white-space: pre-wrap;">${message}</p>
+            <hr style="border-color: rgba(255,255,255,0.1); margin: 20px 0;" />
+            <p style="font-size: 12px; color: #555;">Sent from your portfolio contact form</p>
+          </div>
         `,
       })
       
       if (error) {
-        console.error("Resend error:", error)
+        console.error("Resend error details:", JSON.stringify(error))
       } else {
-        console.log("Email sent successfully via Resend:", data)
+        console.log("Email sent successfully:", data?.id)
       }
     } catch (emailError) {
       console.error("Email sending failed:", emailError)

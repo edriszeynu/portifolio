@@ -2,15 +2,13 @@
 
 import { useState, useEffect } from "react"
 import { Menu, X } from "lucide-react"
-import { ThemeToggle } from "./theme-toggle"
 
 const navLinks = [
-  { label: "About", href: "#about" },
-  { label: "Skills", href: "#skills" },
+  { label: "About",    href: "#about" },
+  { label: "Skills",   href: "#skills" },
   { label: "Projects", href: "#projects" },
-  { label: "Testimonials", href: "#testimonials" },
-  { label: "Resume", href: "#resume" },
-  { label: "Contact", href: "#contact" },
+  { label: "Resume",   href: "#resume" },
+  { label: "Contact",  href: "#contact" },
 ]
 
 export function Navbar() {
@@ -21,105 +19,93 @@ export function Navbar() {
   useEffect(() => {
     const handleScroll = () => {
       setScrolled(window.scrollY > 20)
-
-      const sections = navLinks.map((link) => link.href.replace("#", ""))
+      const sections = navLinks.map((l) => l.href.replace("#", ""))
       for (let i = sections.length - 1; i >= 0; i--) {
-        const section = document.getElementById(sections[i])
-        if (section) {
-          const rect = section.getBoundingClientRect()
-          if (rect.top <= 100) {
-            setActiveSection(sections[i])
-            break
-          }
+        const el = document.getElementById(sections[i])
+        if (el && el.getBoundingClientRect().top <= 100) {
+          setActiveSection(sections[i])
+          break
         }
       }
     }
-
     window.addEventListener("scroll", handleScroll)
     return () => window.removeEventListener("scroll", handleScroll)
   }, [])
 
   return (
     <header
-      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
-        scrolled
-          ? "bg-background/80 backdrop-blur-md border-b border-border"
-          : "bg-transparent"
-      }`}
+      className="fixed top-0 left-0 right-0 z-50 transition-all duration-500"
+      style={scrolled ? {
+        background: "rgba(6,11,24,0.85)",
+        backdropFilter: "blur(20px)",
+        borderBottom: "1px solid rgba(255,255,255,0.06)",
+      } : { background: "transparent" }}
     >
-      <nav className="mx-auto flex max-w-6xl items-center justify-between px-6 py-4">
-        <a
-          href="#"
-          className="text-xl font-bold tracking-tight text-foreground"
-        >
+      <nav className="mx-auto flex max-w-7xl items-center justify-between px-6 py-4 lg:px-16">
+        {/* Logo */}
+        <a href="#" className="font-mono text-xl font-black tracking-tight text-white">
           {"<"}
-          <span className="text-primary">Endris</span>
+          <span style={{
+            background: "linear-gradient(90deg, #a855f7, #06b6d4)",
+            WebkitBackgroundClip: "text",
+            WebkitTextFillColor: "transparent",
+            backgroundClip: "text",
+          }}>Endris</span>
           {" />"}
         </a>
 
-        {/* Desktop Nav */}
-        <ul className="hidden items-center gap-6 md:flex">
-          {navLinks.map((link) => (
-            <li key={link.href}>
-              <a
-                href={link.href}
-                className={`text-sm font-medium transition-colors hover:text-primary ${
-                  activeSection === link.href.replace("#", "")
-                    ? "text-primary"
-                    : "text-muted-foreground"
-                }`}
-              >
-                {link.label}
-              </a>
-            </li>
-          ))}
-          <li>
-            <ThemeToggle />
-          </li>
-          <li>
-            <a
-              href="#contact"
-              className="rounded-lg bg-primary px-4 py-2 text-sm font-medium text-primary-foreground transition-colors hover:bg-primary/90"
-            >
-              Hire Me
-            </a>
-          </li>
+        {/* Desktop links */}
+        <ul className="hidden items-center gap-8 md:flex">
+          {navLinks.map((link) => {
+            const isActive = activeSection === link.href.replace("#", "")
+            return (
+              <li key={link.href}>
+                <a href={link.href}
+                  className="relative text-base font-semibold tracking-wide transition-all duration-200"
+                  style={{ color: isActive ? "#a855f7" : "rgba(255,255,255,0.65)" }}
+                >
+                  {link.label}
+                  {isActive && (
+                    <span className="absolute -bottom-1 left-0 right-0 h-[2px] rounded-full"
+                      style={{ background: "linear-gradient(90deg, #a855f7, #06b6d4)" }} />
+                  )}
+                </a>
+              </li>
+            )
+          })}
         </ul>
 
-        {/* Mobile Actions */}
-        <div className="flex items-center gap-2 md:hidden">
-          <ThemeToggle />
-          <button
-            onClick={() => setIsOpen(!isOpen)}
-            className="text-foreground"
-            aria-label={isOpen ? "Close menu" : "Open menu"}
-          >
-            {isOpen ? <X size={24} /> : <Menu size={24} />}
-          </button>
+        {/* Hire Me */}
+        <div className="hidden md:block">
+          <a href="#contact"
+            className="rounded-full px-6 py-2.5 text-base font-bold text-white transition-all hover:scale-105"
+            style={{ background: "linear-gradient(135deg, #7c3aed, #2563eb)", boxShadow: "0 0 20px rgba(124,58,237,0.40)" }}>
+            Hire Me
+          </a>
         </div>
+
+        {/* Mobile toggle */}
+        <button onClick={() => setIsOpen(!isOpen)} className="text-white/70 md:hidden" aria-label="Toggle menu">
+          {isOpen ? <X size={24} /> : <Menu size={24} />}
+        </button>
       </nav>
 
-      {/* Mobile Nav */}
+      {/* Mobile menu */}
       {isOpen && (
-        <div className="border-b border-border bg-background/95 backdrop-blur-md md:hidden">
+        <div className="md:hidden" style={{ background: "rgba(6,11,24,0.97)", borderBottom: "1px solid rgba(255,255,255,0.06)" }}>
           <ul className="flex flex-col gap-4 px-6 py-6">
             {navLinks.map((link) => (
               <li key={link.href}>
-                <a
-                  href={link.href}
-                  onClick={() => setIsOpen(false)}
-                  className="text-sm font-medium text-muted-foreground transition-colors hover:text-primary"
-                >
+                <a href={link.href} onClick={() => setIsOpen(false)}
+                  className="text-sm font-medium text-white/60 transition-colors hover:text-white">
                   {link.label}
                 </a>
               </li>
             ))}
             <li>
-              <a
-                href="#contact"
-                onClick={() => setIsOpen(false)}
-                className="inline-block rounded-lg bg-primary px-4 py-2 text-sm font-medium text-primary-foreground"
-              >
+              <a href="#contact" onClick={() => setIsOpen(false)}
+                className="inline-block rounded-full px-5 py-2 text-sm font-bold text-white"
+                style={{ background: "linear-gradient(135deg, #7c3aed, #2563eb)" }}>
                 Hire Me
               </a>
             </li>
